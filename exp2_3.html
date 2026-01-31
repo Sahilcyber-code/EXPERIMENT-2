@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Experiment 1.2.3 - SVG Drawing Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #tools {
+            margin-bottom: 10px;
+        }
+        svg {
+            border: 2px solid black;
+            width: 100%;
+            height: 400px;
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html">⬅ Back to Home</a>
+
+<h1>Experiment 1.2.3</h1>
+<h2>SVG Drawing Tool</h2>
+
+<div id="tools">
+    <label>Choose Color: </label>
+    <input type="color" id="colorPicker" value="#000000">
+    <button onclick="undo()">Undo</button>
+</div>
+
+<svg id="canvas"></svg>
+
+<script>
+    const svg = document.getElementById("canvas");
+    const colorPicker = document.getElementById("colorPicker");
+    let drawing = false;
+    let currentPath;
+    let paths = [];
+
+    svg.addEventListener("mousedown", (e) => {
+        drawing = true;
+        currentPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        currentPath.setAttribute("stroke", colorPicker.value);
+        currentPath.setAttribute("fill", "none");
+        currentPath.setAttribute("stroke-width", "2");
+
+        const point = getPoint(e);
+        currentPath.setAttribute("d", `M ${point.x} ${point.y}`);
+        svg.appendChild(currentPath);
+        paths.push(currentPath);
+    });
+
+    svg.addEventListener("mousemove", (e) => {
+        if (!drawing) return;
+        const point = getPoint(e);
+        let d = currentPath.getAttribute("d");
+        currentPath.setAttribute("d", d + ` L ${point.x} ${point.y}`);
+    });
+
+    svg.addEventListener("mouseup", () => drawing = false);
+    svg.addEventListener("mouseleave", () => drawing = false);
+
+    function getPoint(e) {
+        const rect = svg.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+    }
+
+    function undo() {
+        if (paths.length > 0) {
+            svg.removeChild(paths.pop());
+        }
+    }
+</script>
+
+</body>
+</html>
