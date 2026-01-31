@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiment 1.2.2 - Dynamic Product Filter</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .top { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    select { padding: 8px; }
+    .grid { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+    .card { border: 1px solid #ccc; padding: 12px; border-radius: 10px; }
+    .name { font-weight: bold; }
+    .meta { color: #555; font-size: 14px; margin-top: 6px; }
+    a { display: inline-block; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+  <a href="index.html">⬅ Back to Home</a>
+
+  <h1>Experiment 1.2.2</h1>
+  <h2>Dynamic Product Filter</h2>
+
+  <div class="top">
+    <label for="filter"><b>Filter by Category:</b></label>
+    <select id="filter">
+      <option value="all">All</option>
+      <option value="mobile">Mobile</option>
+      <option value="laptop">Laptop</option>
+      <option value="accessory">Accessory</option>
+    </select>
+  </div>
+
+  <div id="list" class="grid"></div>
+
+  <script>
+    const products = [
+      { name: "iPhone 14", category: "mobile", price: 69999 },
+      { name: "Samsung S23", category: "mobile", price: 64999 },
+      { name: "Dell Inspiron", category: "laptop", price: 55999 },
+      { name: "HP Pavilion", category: "laptop", price: 59999 },
+      { name: "Wireless Mouse", category: "accessory", price: 799 },
+      { name: "Keyboard", category: "accessory", price: 999 }
+    ];
+
+    const filter = document.getElementById("filter");
+    const list = document.getElementById("list");
+
+    function render(items) {
+      list.innerHTML = "";
+      items.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <div class="name">${p.name}</div>
+          <div class="meta">Category: ${p.category}</div>
+          <div class="meta">Price: ₹${p.price}</div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    filter.addEventListener("change", () => {
+      const val = filter.value;
+      if (val === "all") render(products);
+      else render(products.filter(p => p.category === val));
+    });
+
+    render(products);
+  </script>
+
+</body>
+</html>
