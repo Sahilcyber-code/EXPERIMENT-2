@@ -2,72 +2,115 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Experiment 2.2 - Dynamic Product Filter</title>
+  <title>Product Filter</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .top { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-    select { padding: 8px; }
-    .grid { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
-    .card { border: 1px solid #ccc; padding: 12px; border-radius: 10px; }
-    .name { font-weight: bold; }
-    .meta { color: #555; font-size: 14px; margin-top: 6px; }
-    a { display: inline-block; margin-bottom: 12px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f7fb;
+      padding: 30px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .filter {
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 8px 12px;
+      font-size: 16px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .price {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #fff;
+    }
+
+    .electronics {
+      background: #3b82f6;
+    }
+
+    .clothing {
+      background: #60a5fa;
+    }
   </style>
 </head>
 <body>
+<h1> EXPERIMENT - 2.2</h1>  
+  <h1>Product Filter</h1>
 
-  <a href="index.html">⬅ Back to Home</a>
-
-  <h1>Experiment 2.2</h1>
-  <h2>Dynamic Product Filter</h2>
-
-  <div class="top">
-    <label for="filter"><b>Filter by Category:</b></label>
-    <select id="filter">
-      <option value="all">All</option>
-      <option value="mobile">Mobile</option>
-      <option value="laptop">Laptop</option>
-      <option value="accessory">Accessory</option>
+  <div class="filter">
+    <label>Filter by: </label>
+    <select id="categoryFilter">
+      <option value="all">All Products</option>
+      <option value="electronics">Electronics</option>
+      <option value="clothing">Clothing</option>
     </select>
   </div>
 
-  <div id="list" class="grid"></div>
+  <div class="products" id="productList"></div>
 
   <script>
     const products = [
-      { name: "iPhone 14", category: "mobile", price: 69999 },
-      { name: "Samsung S23", category: "mobile", price: 64999 },
-      { name: "Dell Inspiron", category: "laptop", price: 55999 },
-      { name: "HP Pavilion", category: "laptop", price: 59999 },
-      { name: "Wireless Mouse", category: "accessory", price: 799 },
-      { name: "Keyboard", category: "accessory", price: 999 }
+      { name: "Wireless Headphones", price: 100, category: "electronics" },
+      { name: "Cotton T-Shirt", price: 20, category: "clothing" },
+      { name: "Bluetooth Speaker", price: 120, category: "electronics" },
+      { name: "Denim Jeans", price: 80, category: "clothing" }
     ];
 
-    const filter = document.getElementById("filter");
-    const list = document.getElementById("list");
+    const productList = document.getElementById("productList");
+    const filter = document.getElementById("categoryFilter");
 
-    function render(items) {
-      list.innerHTML = "";
-      items.forEach(p => {
-        const div = document.createElement("div");
-        div.className = "card";
-        div.innerHTML = `
-          <div class="name">${p.name}</div>
-          <div class="meta">Category: ${p.category}</div>
-          <div class="meta">Price: ₹${p.price}</div>
+    function displayProducts(category) {
+      productList.innerHTML = "";
+
+      const filtered = category === "all"
+        ? products
+        : products.filter(p => p.category === category);
+
+      filtered.forEach(product => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <h3>${product.name}</h3>
+          <div class="price">$${product.price}</div>
+          <span class="tag ${product.category}">${product.category}</span>
         `;
-        list.appendChild(div);
+
+        productList.appendChild(card);
       });
     }
 
     filter.addEventListener("change", () => {
-      const val = filter.value;
-      if (val === "all") render(products);
-      else render(products.filter(p => p.category === val));
+      displayProducts(filter.value);
     });
 
-    render(products);
+    // Initial load
+    displayProducts("all");
   </script>
 
 </body>
